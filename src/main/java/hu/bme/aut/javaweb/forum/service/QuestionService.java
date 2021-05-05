@@ -5,6 +5,8 @@ import hu.bme.aut.javaweb.forum.model.Question;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class QuestionService {
@@ -15,23 +17,27 @@ public class QuestionService {
     }
 
     public List<Question> getQuestionsByCategoryId(int id) {
-        return questionDataSource.getQuestionsByCategoryId(id);
+        return questionDataSource.findAll(); // TODO
     }
 
-    public Question getQuestionById(int id) {
-        return questionDataSource.getQuestionById(id);
+    public Question getQuestionById(Long id) {
+        Optional<Question> question = questionDataSource.findById(id);
+
+        if (question.isEmpty()) {
+            throw new NoSuchElementException("Question not found");
+        }
+
+        return question.get();
     }
 
     public Question createQuestion(Question question) {
-        return questionDataSource.createQuestion(question);
+        return questionDataSource.save(question);
     }
 
     public Question updateQuestion(Question question) {
-        return questionDataSource.updateQuestion(question);
+        return questionDataSource.save(question);
     }
 
-    public void deleteQuestionById(int id) {
-        questionDataSource.deleteQuestionById(id);
-    }
+    public void deleteQuestionById(Long id) { questionDataSource.deleteById(id); }
 
 }

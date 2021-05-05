@@ -1,17 +1,35 @@
 package hu.bme.aut.javaweb.forum.model;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity(name = "Question")
+@Table(name = "question")
 public class Question {
-    private int id;
-    private int userId;
-    private int categoryId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", updatable = false)
+    private Long id;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "category_id", nullable = false)
+    private Long categoryId;
+
+    @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "description", nullable = false)
     private String description;
+
+    @Column(name = "time", nullable = false)
     private Date time;
 
-    public Question(int id, int userId, int categoryId, String title, String description, Date time) {
-        this.id = id;
+    public Question() { }
+
+    public Question(Long userId, Long categoryId, String title, String description, Date time) {
         this.userId = userId;
         this.categoryId = categoryId;
         this.title = title;
@@ -19,27 +37,23 @@ public class Question {
         this.time = time;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -65,5 +79,17 @@ public class Question {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", categoryId=" + categoryId +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", time=" + time +
+                '}';
     }
 }

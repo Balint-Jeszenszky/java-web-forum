@@ -1,43 +1,55 @@
 package hu.bme.aut.javaweb.forum.model;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity(name = "Answer")
+@Table(name = "answer")
 public class Answer {
-    private int id;
-    private int userId;
-    private int questionId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", updatable = false)
+    private Long id;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "question_id", nullable = false)
+    private Long questionId;
+
+    @Column(name = "time", nullable = false)
     private Date time;
+
+    @Column(name = "text", nullable = false)
     private String text;
 
-    public Answer(int id, int userId, int questionId, Date time, String text) {
-        this.id = id;
+    public Answer() { }
+
+    public Answer(Long userId, Long questionId, Date time, String text) {
         this.userId = userId;
         this.questionId = questionId;
         this.time = time;
         this.text = text;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public int getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 
@@ -55,5 +67,16 @@ public class Answer {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return "Answer{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", questionId=" + questionId +
+                ", time=" + time +
+                ", text='" + text + '\'' +
+                '}';
     }
 }

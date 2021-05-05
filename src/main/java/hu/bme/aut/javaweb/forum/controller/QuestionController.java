@@ -24,12 +24,12 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public List<Question> getQusetionsByCategoryId(@PathVariable int id) {
+    public List<Question> getQuestionsByCategoryId(@PathVariable int id) {
         return questionService.getQuestionsByCategoryId(id);
     }
 
     @GetMapping("/question/{id}")
-    public Question getUser(@PathVariable int id) {
+    public Question getUser(@PathVariable Long id) {
         return questionService.getQuestionById(id);
     }
 
@@ -46,7 +46,7 @@ public class QuestionController {
 
     @DeleteMapping("/question/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable int id) {
+    public void deleteUser(@PathVariable Long id) {
         questionService.deleteQuestionById(id);
     }
 }

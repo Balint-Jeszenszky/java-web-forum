@@ -24,12 +24,12 @@ public class AnswerController {
     }
 
     @GetMapping("/{id}")
-    public List<Answer> getAnswersByQuestionId(@PathVariable int id) {
+    public List<Answer> getAnswersByQuestionId(@PathVariable Long id) {
         return answerService.getAnswersByQuestionId(id);
     }
 
     @GetMapping("/answer/{id}")
-    public Answer getAnswer(@PathVariable int id) {
+    public Answer getAnswer(@PathVariable Long id) {
         return answerService.getAnswerById(id);
     }
 
@@ -44,7 +44,7 @@ public class AnswerController {
     }
 
     @DeleteMapping("/answer/{id}")
-    public void deleteAnswer(@PathVariable int id) {
+    public void deleteAnswer(@PathVariable Long id) {
         answerService.deleteAnswerById(id);
     }
 }

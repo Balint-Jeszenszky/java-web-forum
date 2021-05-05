@@ -5,6 +5,8 @@ import hu.bme.aut.javaweb.forum.model.Category;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -15,22 +17,28 @@ public class CategoryService {
     }
 
     public List<Category> getAllCategories() {
-        return categoryDataSource.getAllCategories();
+        return categoryDataSource.findAll();
     }
 
-    public  Category getCategoryById(int id) {
-        return categoryDataSource.getCategoryById(id);
+    public Category getCategoryById(Long id) {
+        Optional<Category> category = categoryDataSource.findById(id);
+
+        if (category.isEmpty()) {
+            throw new NoSuchElementException("Category not found");
+        }
+
+        return category.get();
     }
 
     public Category createCategory(Category category) {
-        return categoryDataSource.createCategory(category);
+        return categoryDataSource.save(category);
     }
 
     public Category updateCategory(Category category) {
-        return categoryDataSource.updateCategory(category);
+        return categoryDataSource.save(category);
     }
 
-    public void deleteCategoryById(int id) {
-        categoryDataSource.deleteCategoryById(id);
+    public void deleteCategoryById(Long id) {
+        categoryDataSource.deleteById(id);
     }
 }

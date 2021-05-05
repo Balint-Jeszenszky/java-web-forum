@@ -5,6 +5,8 @@ import hu.bme.aut.javaweb.forum.model.Answer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class AnswerService {
@@ -14,23 +16,29 @@ public class AnswerService {
         this.answerDataSource = answerDataSource;
     }
 
-    public List<Answer> getAnswersByQuestionId(int id) {
-        return answerDataSource.getAnswersByQuestionId(id);
+    public List<Answer> getAnswersByQuestionId(Long id) {
+        return answerDataSource.findAll(); // TODO
     }
 
-    public Answer getAnswerById(int id) {
-        return answerDataSource.getAnswerById(id);
+    public Answer getAnswerById(Long id) {
+        Optional<Answer> answer = answerDataSource.findById(id);
+
+        if (answer.isEmpty()) {
+            throw new NoSuchElementException("Answer not found");
+        }
+
+        return answer.get();
     }
 
     public Answer createAnswer(Answer answer) {
-        return answerDataSource.createAnswer(answer);
+        return answerDataSource.save(answer);
     }
 
     public Answer updateAnswer(Answer answer) {
-        return answerDataSource.updateAnswer(answer);
+        return answerDataSource.save(answer);
     }
 
-    public void deleteAnswerById(int id) {
-        answerDataSource.deleteAnswerById(id);
+    public void deleteAnswerById(Long id) {
+        answerDataSource.deleteById(id);
     }
 }

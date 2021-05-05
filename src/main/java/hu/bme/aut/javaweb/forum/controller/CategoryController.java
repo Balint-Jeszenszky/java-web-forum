@@ -29,7 +29,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public Category getCategory(@PathVariable int id){
+    public Category getCategory(@PathVariable Long id){
         return categoryService.getCategoryById(id);
     }
 
@@ -45,7 +45,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable int id) {
+    public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);
     }
 }

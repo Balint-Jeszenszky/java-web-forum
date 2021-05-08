@@ -1,12 +1,15 @@
 package hu.bme.aut.javaweb.forum.service;
 
+import hu.bme.aut.javaweb.forum.model.dto.AnswerDTO;
 import hu.bme.aut.javaweb.forum.datasource.AnswerDataSource;
 import hu.bme.aut.javaweb.forum.model.Answer;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AnswerService {
@@ -17,7 +20,7 @@ public class AnswerService {
     }
 
     public List<Answer> getAnswersByQuestionId(Long id) {
-        return answerDataSource.findAll(); // TODO
+        return answerDataSource.findAll().stream().filter(a -> a.getQuestionId() == id).collect(Collectors.toList());
     }
 
     public Answer getAnswerById(Long id) {
@@ -30,8 +33,15 @@ public class AnswerService {
         return answer.get();
     }
 
-    public Answer createAnswer(Answer answer) {
-        return answerDataSource.save(answer);
+    public Answer createAnswer(AnswerDTO answer) {
+        return answerDataSource.save(
+                new Answer(
+                        answer.getUserId(),
+                        answer.getQuestionId(),
+                        new Date(),
+                        answer.getText()
+                )
+        );
     }
 
     public Answer updateAnswer(Answer answer) {

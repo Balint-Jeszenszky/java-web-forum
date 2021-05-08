@@ -1,5 +1,6 @@
 package hu.bme.aut.javaweb.forum.controller;
 
+import hu.bme.aut.javaweb.forum.model.dto.AnswerDTO;
 import hu.bme.aut.javaweb.forum.model.Answer;
 import hu.bme.aut.javaweb.forum.service.AnswerService;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/answers")
 public class AnswerController {
@@ -34,7 +36,7 @@ public class AnswerController {
     }
 
     @PostMapping("/answer")
-    public Answer createAnswer(@RequestBody Answer answer) {
+    public Answer createAnswer(@RequestBody AnswerDTO answer) {
         return answerService.createAnswer(answer);
     }
 

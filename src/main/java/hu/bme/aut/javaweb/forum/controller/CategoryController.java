@@ -4,6 +4,7 @@ import hu.bme.aut.javaweb.forum.model.Category;
 import hu.bme.aut.javaweb.forum.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,22 +30,21 @@ public class CategoryController {
         return categoryService.getAllCategories();
     }
 
-    @GetMapping("/{id}")
-    public Category getCategory(@PathVariable Long id){
-        return categoryService.getCategoryById(id);
-    }
-
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     public Category createCategory(@RequestBody Category category) {
         return categoryService.createCategory(category);
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Category updateCategory(@RequestBody Category category) {
         return categoryService.updateCategory(category);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);

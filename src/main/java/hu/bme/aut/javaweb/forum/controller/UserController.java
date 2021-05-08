@@ -1,11 +1,16 @@
 package hu.bme.aut.javaweb.forum.controller;
 
 import hu.bme.aut.javaweb.forum.model.User;
+import hu.bme.aut.javaweb.forum.security.services.UserDetailsImpl;
 import hu.bme.aut.javaweb.forum.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @CrossOrigin
@@ -28,19 +33,38 @@ public class UserController {
         return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<User> getAllUser() {
+        return userService.getAllUsers();
+    }
+
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @PreAuthorize("hasRole('USER')")
+    public User getUser(Authentication authentication, @PathVariable Long id) {
+        UserDetailsImpl userDetails = (UserDetailsImpl)authentication.getPrincipal();
+        Long userId = userDetails.getId();
+        Boolean admin = ((List)userDetails.getAuthorities()).stream().anyMatch(
+                e -> ((SimpleGrantedAuthority)e).getAuthority().equals("ROLE_ADMIN"));
+
+        return userService.getUserById(id, userId, admin);
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('USER')")
     public User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUserById(id);
+    public void deleteUser(Authentication authentication, @PathVariable Long id) {
+        UserDetailsImpl userDetails = (UserDetailsImpl)authentication.getPrincipal();
+        Long userId = userDetails.getId();
+        Boolean admin = ((List)userDetails.getAuthorities()).stream().anyMatch(
+                e -> ((SimpleGrantedAuthority)e).getAuthority().equals("ROLE_ADMIN"));
+
+        userService.deleteUserById(id, userId, admin);
     }
 }

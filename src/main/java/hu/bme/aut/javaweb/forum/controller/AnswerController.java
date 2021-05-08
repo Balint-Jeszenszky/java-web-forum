@@ -40,6 +40,7 @@ public class AnswerController {
 
     @PostMapping("/answer")
     @PreAuthorize("hasRole('USER')")
+    @ResponseStatus(HttpStatus.CREATED)
     public Answer createAnswer(Authentication authentication, @RequestBody AnswerDTO answer) {
         Long userId = ((UserDetailsImpl)authentication.getPrincipal()).getId();
 
@@ -56,6 +57,7 @@ public class AnswerController {
 
     @DeleteMapping("/answer/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAnswer(@PathVariable Long id) {
         answerService.deleteAnswerById(id);
     }

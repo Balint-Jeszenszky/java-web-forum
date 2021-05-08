@@ -1,33 +1,26 @@
 package hu.bme.aut.javaweb.forum.service;
 
 import hu.bme.aut.javaweb.forum.datasource.CategoryDataSource;
+import hu.bme.aut.javaweb.forum.datasource.QuestionDataSource;
 import hu.bme.aut.javaweb.forum.model.Category;
+import hu.bme.aut.javaweb.forum.model.Question;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class CategoryService {
     private CategoryDataSource categoryDataSource;
+    private QuestionService questionService;
 
-    public CategoryService(CategoryDataSource categoryDataSource) {
+    public CategoryService(CategoryDataSource categoryDataSource, QuestionService questionService) {
         this.categoryDataSource = categoryDataSource;
+        this.questionService = questionService;
     }
 
     public List<Category> getAllCategories() {
         return categoryDataSource.findAll();
-    }
-
-    public Category getCategoryById(Long id) {
-        Optional<Category> category = categoryDataSource.findById(id);
-
-        if (category.isEmpty()) {
-            throw new NoSuchElementException("Category not found");
-        }
-
-        return category.get();
     }
 
     public Category createCategory(Category category) {
@@ -38,7 +31,14 @@ public class CategoryService {
         return categoryDataSource.save(category);
     }
 
+    @Transactional
     public void deleteCategoryById(Long id) {
+        List<Question> questions = questionService.getQuestionsByCategoryId(id);
+
+        for (Question q : questions) {
+            questionService.deleteQuestionById(q.getId());
+        }
+
         categoryDataSource.deleteById(id);
     }
 }

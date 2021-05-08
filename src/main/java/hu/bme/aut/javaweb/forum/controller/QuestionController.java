@@ -68,7 +68,5 @@ public class QuestionController {
     @DeleteMapping("/question/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable Long id) {
-        questionService.deleteQuestionById(id);
-    }
+    public void deleteUser(@PathVariable Long id) { questionService.deleteQuestionById(id); }
 }

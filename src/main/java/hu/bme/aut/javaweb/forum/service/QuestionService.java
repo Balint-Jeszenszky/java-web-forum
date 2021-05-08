@@ -1,11 +1,12 @@
 package hu.bme.aut.javaweb.forum.service;
 
+import hu.bme.aut.javaweb.forum.datasource.AnswerDataSource;
 import hu.bme.aut.javaweb.forum.datasource.QuestionDataSource;
-import hu.bme.aut.javaweb.forum.model.Answer;
 import hu.bme.aut.javaweb.forum.model.Question;
 import hu.bme.aut.javaweb.forum.model.dto.QuestionDTO;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -14,9 +15,11 @@ import java.util.Optional;
 @Service
 public class QuestionService {
     private QuestionDataSource questionDataSource;
+    private AnswerDataSource answerDataSource;
 
-    public QuestionService(QuestionDataSource questionDataSource) {
+    public QuestionService(QuestionDataSource questionDataSource, AnswerDataSource answerDataSource) {
         this.questionDataSource = questionDataSource;
+        this.answerDataSource = answerDataSource;
     }
 
     public List<Question> getQuestionsByCategoryId(Long id) {
@@ -67,6 +70,10 @@ public class QuestionService {
         return questionDataSource.save(retrievedQuestion);
     }
 
-    public void deleteQuestionById(Long id) { questionDataSource.deleteById(id); }
+    @Transactional
+    public void deleteQuestionById(Long id) {
+        answerDataSource.deleteAnswersByQuestionId(id);
+        questionDataSource.deleteById(id);
+    }
 
 }

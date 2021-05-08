@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AnswerDataSource extends JpaRepository<Answer, Long> {
     List<Answer> findAnswersByQuestionId(Long id);
+    void deleteAnswersByQuestionId(Long id);
 }

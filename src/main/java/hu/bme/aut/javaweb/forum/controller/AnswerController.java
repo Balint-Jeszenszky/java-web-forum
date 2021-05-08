@@ -2,9 +2,12 @@ package hu.bme.aut.javaweb.forum.controller;
 
 import hu.bme.aut.javaweb.forum.model.dto.AnswerDTO;
 import hu.bme.aut.javaweb.forum.model.Answer;
+import hu.bme.aut.javaweb.forum.security.services.UserDetailsImpl;
 import hu.bme.aut.javaweb.forum.service.AnswerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,16 +39,23 @@ public class AnswerController {
     }
 
     @PostMapping("/answer")
-    public Answer createAnswer(@RequestBody AnswerDTO answer) {
-        return answerService.createAnswer(answer);
+    @PreAuthorize("hasRole('USER')")
+    public Answer createAnswer(Authentication authentication, @RequestBody AnswerDTO answer) {
+        Long userId = ((UserDetailsImpl)authentication.getPrincipal()).getId();
+
+        return answerService.createAnswer(answer, userId);
     }
 
     @PutMapping("/answer")
-    public Answer updateAnswer(@RequestBody Answer answer) {
-        return answerService.updateAnswer(answer);
+    @PreAuthorize("hasRole('USER')")
+    public Answer updateAnswer(Authentication authentication, @RequestBody AnswerDTO answer) {
+        Long userId = ((UserDetailsImpl)authentication.getPrincipal()).getId();
+
+        return answerService.updateAnswer(answer, userId);
     }
 
     @DeleteMapping("/answer/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteAnswer(@PathVariable Long id) {
         answerService.deleteAnswerById(id);
     }

@@ -2,9 +2,12 @@ package hu.bme.aut.javaweb.forum.controller;
 
 import hu.bme.aut.javaweb.forum.model.Question;
 import hu.bme.aut.javaweb.forum.model.dto.QuestionDTO;
+import hu.bme.aut.javaweb.forum.security.services.UserDetailsImpl;
 import hu.bme.aut.javaweb.forum.service.QuestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,11 @@ public class QuestionController {
         return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleNotFound(IllegalArgumentException e) {
+        return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @GetMapping("/{id}")
     public List<Question> getQuestionsByCategoryId(@PathVariable Long id) {
         return questionService.getQuestionsByCategoryId(id);
@@ -42,16 +50,23 @@ public class QuestionController {
 
     @PostMapping("/question")
     @ResponseStatus(HttpStatus.CREATED)
-    public Question createUser(@RequestBody QuestionDTO question) {
-        return questionService.createQuestion(question);
+    @PreAuthorize("hasRole('USER')")
+    public Question createQuestion(Authentication authentication, @RequestBody QuestionDTO question) {
+        Long userId = ((UserDetailsImpl)authentication.getPrincipal()).getId();
+
+        return questionService.createQuestion(question, userId);
     }
 
     @PutMapping("/question")
-    public Question updateUser(@RequestBody Question question) {
-        return questionService.updateQuestion(question);
+    @PreAuthorize("hasRole('USER')")
+    public Question updateUser(Authentication authentication, @RequestBody QuestionDTO question) {
+        Long userId = ((UserDetailsImpl)authentication.getPrincipal()).getId();
+
+        return questionService.updateQuestion(question, userId);
     }
 
     @DeleteMapping("/question/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {
         questionService.deleteQuestionById(id);

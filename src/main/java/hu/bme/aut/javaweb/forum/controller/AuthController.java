@@ -50,7 +50,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public JwtResponse authenticateUser(@RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -63,14 +63,16 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        return new JwtResponse(
+                jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
-                roles));
+                roles
+        );
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public User registerUser(@RequestBody SignupRequest signUpRequest) {
         if (userDataSource.existsByUsername(signUpRequest.getUsername())) {
             throw new IllegalArgumentException("Error: Username is already taken!");
@@ -81,9 +83,11 @@ public class AuthController {
         }
 
         // Create new user's account
-        User user = new User(signUpRequest.getUsername(),
+        User user = new User(
+                signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
+                encoder.encode(signUpRequest.getPassword())
+        );
 
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();

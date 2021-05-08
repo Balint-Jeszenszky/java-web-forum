@@ -8,7 +8,7 @@ import java.util.Date;
 public class Answer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false)
     private Long id;
 

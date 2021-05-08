@@ -33,7 +33,11 @@ public class AnswerService {
         return answer.get();
     }
 
-    public Answer createAnswer(AnswerDTO answer) {
+    public Answer createAnswer(AnswerDTO answer, Long userId) {
+        if (userId != answer.getUserId()) {
+            throw new IllegalArgumentException("Wrong userId");
+        }
+
         return answerDataSource.save(
                 new Answer(
                         answer.getUserId(),
@@ -44,8 +48,21 @@ public class AnswerService {
         );
     }
 
-    public Answer updateAnswer(Answer answer) {
-        return answerDataSource.save(answer);
+    public Answer updateAnswer(AnswerDTO answer, Long userId) {
+        if (userId != answer.getUserId()) {
+            throw new IllegalArgumentException("Wrong userId");
+        }
+
+        Optional<Answer> answerResult = answerDataSource.findById(answer.getId());
+
+        if (answerResult.isEmpty()) {
+            throw new NoSuchElementException("Answer not found");
+        }
+
+        Answer retrievedAnswer = answerResult.get();
+        retrievedAnswer.setText(answer.getText());
+
+        return answerDataSource.save(retrievedAnswer);
     }
 
     public void deleteAnswerById(Long id) {

@@ -33,12 +33,6 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
-    }
-
     @PutMapping
     public User updateUser(@RequestBody User user) {
         return userService.updateUser(user);

@@ -20,7 +20,7 @@ public class AnswerService {
     }
 
     public List<Answer> getAnswersByQuestionId(Long id) {
-        return answerDataSource.findAll().stream().filter(a -> a.getQuestionId() == id).collect(Collectors.toList());
+        return answerDataSource.findAnswersByQuestionId(id);
     }
 
     public Answer getAnswerById(Long id) {

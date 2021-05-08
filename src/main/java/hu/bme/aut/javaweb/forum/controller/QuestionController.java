@@ -1,6 +1,7 @@
 package hu.bme.aut.javaweb.forum.controller;
 
 import hu.bme.aut.javaweb.forum.model.Question;
+import hu.bme.aut.javaweb.forum.model.dto.QuestionDTO;
 import hu.bme.aut.javaweb.forum.service.QuestionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public List<Question> getQuestionsByCategoryId(@PathVariable int id) {
+    public List<Question> getQuestionsByCategoryId(@PathVariable Long id) {
         return questionService.getQuestionsByCategoryId(id);
     }
 
@@ -34,9 +35,14 @@ public class QuestionController {
         return questionService.getQuestionById(id);
     }
 
+    @GetMapping("/newest")
+    public List<Question> getUser() {
+        return questionService.getNewestQuestions();
+    }
+
     @PostMapping("/question")
     @ResponseStatus(HttpStatus.CREATED)
-    public Question createUser(@RequestBody Question question) {
+    public Question createUser(@RequestBody QuestionDTO question) {
         return questionService.createQuestion(question);
     }
 

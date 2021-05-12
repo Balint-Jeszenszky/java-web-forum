@@ -1,7 +1,6 @@
 package hu.bme.aut.javaweb.forum.service;
 
 import hu.bme.aut.javaweb.forum.datasource.CategoryDataSource;
-import hu.bme.aut.javaweb.forum.datasource.QuestionDataSource;
 import hu.bme.aut.javaweb.forum.model.Category;
 import hu.bme.aut.javaweb.forum.model.Question;
 import org.springframework.stereotype.Service;

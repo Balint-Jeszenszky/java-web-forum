@@ -1,6 +1,7 @@
 package hu.bme.aut.javaweb.forum.controller;
 
 import hu.bme.aut.javaweb.forum.model.User;
+import hu.bme.aut.javaweb.forum.model.dto.UserDTO;
 import hu.bme.aut.javaweb.forum.security.services.UserDetailsImpl;
 import hu.bme.aut.javaweb.forum.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -52,8 +54,10 @@ public class UserController {
 
     @PutMapping
     @PreAuthorize("hasRole('USER')")
-    public User updateUser(@RequestBody User user) {
-        return userService.updateUser(user);
+    public User updateUser(Authentication authentication, @RequestBody UserDTO user) {
+        Long userId = ((UserDetailsImpl)authentication.getPrincipal()).getId();
+
+        return userService.updateUser(user, userId);
     }
 
     @DeleteMapping("/{id}")

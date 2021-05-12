@@ -9,11 +9,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AnswerService {
     private AnswerDataSource answerDataSource;
+
+    private void validateAnswer(AnswerDTO answer) {
+        if (answer.getText().length() < 3) {
+            throw new IllegalArgumentException("Error: Answer should be at least 3 character!");
+        }
+    }
 
     public AnswerService(AnswerDataSource answerDataSource) {
         this.answerDataSource = answerDataSource;
@@ -34,6 +39,8 @@ public class AnswerService {
     }
 
     public Answer createAnswer(AnswerDTO answer, Long userId) {
+        validateAnswer(answer);
+
         if (userId != answer.getUserId()) {
             throw new IllegalArgumentException("Wrong userId");
         }
@@ -49,6 +56,8 @@ public class AnswerService {
     }
 
     public Answer updateAnswer(AnswerDTO answer, Long userId) {
+        validateAnswer(answer);
+
         if (userId != answer.getUserId()) {
             throw new IllegalArgumentException("Wrong userId");
         }

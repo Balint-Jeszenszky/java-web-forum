@@ -33,7 +33,7 @@ public class QuestionController {
         return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/category/{id}")
     public List<Question> getQuestionsByCategoryId(@PathVariable Long id) {
         return questionService.getQuestionsByCategoryId(id);
     }
@@ -46,6 +46,22 @@ public class QuestionController {
     @GetMapping("/newest")
     public List<Question> getUser() {
         return questionService.getNewestQuestions();
+    }
+
+    @GetMapping("/user/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public List<Question> getQuestionsByUserId(Authentication authentication, @PathVariable Long id) { // TODO
+        Long userId = ((UserDetailsImpl)authentication.getPrincipal()).getId();
+
+        return questionService.getQuestionsByUserId(id, userId);
+    }
+
+    @GetMapping("/answeredby/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public List<Question> getQuestionsAnsweredByUserId(Authentication authentication, @PathVariable Long id) { // TODO
+        Long userId = ((UserDetailsImpl)authentication.getPrincipal()).getId();
+
+        return questionService.getQuestionsAnsweredByUserId(id, userId);
     }
 
     @PostMapping("/question")

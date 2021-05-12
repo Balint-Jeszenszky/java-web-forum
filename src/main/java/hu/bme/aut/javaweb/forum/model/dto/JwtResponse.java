@@ -3,12 +3,12 @@ package hu.bme.aut.javaweb.forum.model.dto;
 import java.util.List;
 
 public class JwtResponse {
-    String token;
-    String type = "Bearer";
-    Long id;
-    String username;
-    String email;
-    List<String> roles;
+    private String token;
+    private String type = "Bearer";
+    private Long id;
+    private String username;
+    private String email;
+    private List<String> roles;
 
     public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
         this.token = accessToken;

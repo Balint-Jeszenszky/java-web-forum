@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @CrossOrigin
@@ -46,7 +48,7 @@ public class AuthController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleBadRequest(IllegalArgumentException e) {
-        return new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/login")
@@ -74,15 +76,32 @@ public class AuthController {
 
     @PostMapping("/register")
     public User registerUser(@RequestBody SignupRequest signUpRequest) {
-        if (userDataSource.existsByUsername(signUpRequest.getUsername())) {
-            throw new IllegalArgumentException("Error: Username is already taken!");
+
+        Pattern emailPattern = Pattern.compile("^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$");
+        Matcher emailMatcher = emailPattern.matcher(signUpRequest.getEmail());
+
+        if (!emailMatcher.matches()) {
+            throw new IllegalArgumentException("Error: Email is invalid!");
         }
 
         if (userDataSource.existsByEmail(signUpRequest.getEmail())) {
             throw new IllegalArgumentException("Error: Email is already in use!");
         }
 
-        // Create new user's account
+        Pattern usernamePattern = Pattern.compile("^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$");
+        Matcher usernameMatcher = usernamePattern.matcher(signUpRequest.getUsername());
+        if (!usernameMatcher.matches()) {
+            throw new IllegalArgumentException("Error: Username should be 4-20 character of letters, .or _ with no double . or _!");
+        }
+
+        if (userDataSource.existsByUsername(signUpRequest.getUsername())) {
+            throw new IllegalArgumentException("Error: Username is already taken!");
+        }
+
+        if (signUpRequest.getPassword().length() < 8) {
+            throw new IllegalArgumentException("Error: Password should be at least 8 character!");
+        }
+
         User user = new User(
                 signUpRequest.getUsername(),
                 signUpRequest.getEmail(),

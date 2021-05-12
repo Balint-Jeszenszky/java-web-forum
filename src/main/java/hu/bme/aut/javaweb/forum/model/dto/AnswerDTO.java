@@ -1,10 +1,10 @@
 package hu.bme.aut.javaweb.forum.model.dto;
 
 public class AnswerDTO {
-    Long id;
-    Long questionId;
-    String text;
-    Long userId;
+    private Long id;
+    private Long questionId;
+    private String text;
+    private Long userId;
 
     public AnswerDTO(Long id, Long questionId, String text, Long userId) {
         this.id = id;

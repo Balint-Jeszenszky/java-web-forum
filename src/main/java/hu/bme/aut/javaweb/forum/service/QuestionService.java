@@ -17,6 +17,15 @@ public class QuestionService {
     private QuestionDataSource questionDataSource;
     private AnswerDataSource answerDataSource;
 
+    private void validateQuestion(QuestionDTO question) {
+        if (question.getTitle().length() < 8) {
+            throw new IllegalArgumentException("Error: Title should be at least 8 character!");
+        }
+        if (question.getDescription().length() < 16) {
+            throw new IllegalArgumentException("Error: Description should be at least 16 character!");
+        }
+    }
+
     public QuestionService(QuestionDataSource questionDataSource, AnswerDataSource answerDataSource) {
         this.questionDataSource = questionDataSource;
         this.answerDataSource = answerDataSource;
@@ -38,7 +47,25 @@ public class QuestionService {
 
     public List<Question> getNewestQuestions() { return questionDataSource.findNewestQuestions(); }
 
+    public List<Question> getQuestionsByUserId(Long id, Long userId) {
+        if (userId != id) {
+            throw new IllegalArgumentException("Wrong userId");
+        }
+
+        return questionDataSource.findQuestionsByUserId(id);
+    }
+
+    public List<Question> getQuestionsAnsweredByUserId(Long id, Long userId) {
+        if (userId != id) {
+            throw new IllegalArgumentException("Wrong userId");
+        }
+
+        return questionDataSource.findQuestionsAnsweredByUserId(id);
+    }
+
     public Question createQuestion(QuestionDTO question, Long userId) {
+        validateQuestion(question);
+
         if (userId != question.getUserId()) {
             throw new IllegalArgumentException("Wrong userId");
         }
@@ -53,6 +80,8 @@ public class QuestionService {
     }
 
     public Question updateQuestion(QuestionDTO question, Long userId) {
+        validateQuestion(question);
+
         if (userId != question.getUserId()) {
             throw new IllegalArgumentException("Wrong userId");
         }

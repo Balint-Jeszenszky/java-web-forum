@@ -4,6 +4,7 @@ import hu.bme.aut.javaweb.forum.datasource.AnswerDataSource;
 import hu.bme.aut.javaweb.forum.datasource.QuestionDataSource;
 import hu.bme.aut.javaweb.forum.model.Question;
 import hu.bme.aut.javaweb.forum.model.dto.QuestionDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,7 +15,11 @@ import java.util.Optional;
 
 @Service
 public class QuestionService {
+
+    @Autowired
     private QuestionDataSource questionDataSource;
+
+    @Autowired
     private AnswerDataSource answerDataSource;
 
     private void validateQuestion(QuestionDTO question) {
@@ -24,11 +29,6 @@ public class QuestionService {
         if (question.getDescription().length() < 16) {
             throw new IllegalArgumentException("Error: Description should be at least 16 character!");
         }
-    }
-
-    public QuestionService(QuestionDataSource questionDataSource, AnswerDataSource answerDataSource) {
-        this.questionDataSource = questionDataSource;
-        this.answerDataSource = answerDataSource;
     }
 
     public List<Question> getQuestionsByCategoryId(Long id) {
@@ -52,7 +52,7 @@ public class QuestionService {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        return questionDataSource.findQuestionsByUserId(id);
+        return questionDataSource.findQuestionsByUserIdOrderByTimeDesc(id);
     }
 
     public List<Question> getQuestionsAnsweredByUserId(Long id, Long userId) {

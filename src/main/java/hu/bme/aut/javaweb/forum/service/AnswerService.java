@@ -3,6 +3,7 @@ package hu.bme.aut.javaweb.forum.service;
 import hu.bme.aut.javaweb.forum.model.dto.AnswerDTO;
 import hu.bme.aut.javaweb.forum.datasource.AnswerDataSource;
 import hu.bme.aut.javaweb.forum.model.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,16 +13,14 @@ import java.util.Optional;
 
 @Service
 public class AnswerService {
+
+    @Autowired
     private AnswerDataSource answerDataSource;
 
     private void validateAnswer(AnswerDTO answer) {
         if (answer.getText().length() < 3) {
             throw new IllegalArgumentException("Error: Answer should be at least 3 character!");
         }
-    }
-
-    public AnswerService(AnswerDataSource answerDataSource) {
-        this.answerDataSource = answerDataSource;
     }
 
     public List<Answer> getAnswersByQuestionId(Long id) {

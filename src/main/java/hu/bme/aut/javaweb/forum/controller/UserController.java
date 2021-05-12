@@ -4,6 +4,7 @@ import hu.bme.aut.javaweb.forum.model.User;
 import hu.bme.aut.javaweb.forum.model.dto.UserDTO;
 import hu.bme.aut.javaweb.forum.security.services.UserDetailsImpl;
 import hu.bme.aut.javaweb.forum.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,11 +20,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    private UserService userService;
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNotFound(NoSuchElementException e) {

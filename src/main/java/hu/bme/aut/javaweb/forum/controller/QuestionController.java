@@ -4,6 +4,7 @@ import hu.bme.aut.javaweb.forum.model.Question;
 import hu.bme.aut.javaweb.forum.model.dto.QuestionDTO;
 import hu.bme.aut.javaweb.forum.security.services.UserDetailsImpl;
 import hu.bme.aut.javaweb.forum.service.QuestionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,11 +18,9 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
-    private QuestionService questionService;
 
-    public QuestionController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
+    @Autowired
+    private QuestionService questionService;
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNotFound(NoSuchElementException e) {

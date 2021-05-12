@@ -17,14 +17,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
+    @Autowired
     private UserDataSource userDataSource;
 
     @Autowired
     PasswordEncoder encoder;
-
-    public UserService(UserDataSource userDataSource) {
-        this.userDataSource = userDataSource;
-    }
 
     public List<User> getAllUsers() {
         return userDataSource.findAll().stream().map(e -> {e.setPassword(""); return e;}).collect(Collectors.toList());

@@ -2,6 +2,7 @@ package hu.bme.aut.javaweb.forum.controller;
 
 import hu.bme.aut.javaweb.forum.model.Category;
 import hu.bme.aut.javaweb.forum.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,11 +15,9 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {
-    private CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+    @Autowired
+    private CategoryService categoryService;
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNotFound(NoSuchElementException e) {

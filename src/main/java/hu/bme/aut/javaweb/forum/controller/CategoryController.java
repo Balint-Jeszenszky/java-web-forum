@@ -1,6 +1,7 @@
 package hu.bme.aut.javaweb.forum.controller;
 
 import hu.bme.aut.javaweb.forum.model.Category;
+import hu.bme.aut.javaweb.forum.model.dto.CategoryDTO;
 import hu.bme.aut.javaweb.forum.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,13 +38,13 @@ public class CategoryController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public Category createCategory(@RequestBody Category category) {
+    public Category createCategory(@RequestBody CategoryDTO category) {
         return categoryService.createCategory(category);
     }
 
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Category updateCategory(@RequestBody Category category) {
+    public Category updateCategory(@RequestBody CategoryDTO category) {
         return categoryService.updateCategory(category);
     }
 

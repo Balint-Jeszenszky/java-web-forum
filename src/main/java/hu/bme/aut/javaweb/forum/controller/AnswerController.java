@@ -31,7 +31,7 @@ public class AnswerController {
         return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/question/{id}")
     public List<Answer> getAnswersByQuestionId(@PathVariable Long id) {
         return answerService.getAnswersByQuestionId(id);
     }

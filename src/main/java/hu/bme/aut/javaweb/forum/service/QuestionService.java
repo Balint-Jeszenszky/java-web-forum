@@ -23,10 +23,10 @@ public class QuestionService {
     private AnswerRepository answerRepository;
 
     private void validateQuestion(QuestionDTO question) {
-        if (question.getTitle().length() < 8) {
+        if (question.getTitle().trim().length() < 8) {
             throw new IllegalArgumentException("Error: Title should be at least 8 character!");
         }
-        if (question.getDescription().length() < 16) {
+        if (question.getDescription().trim().length() < 16) {
             throw new IllegalArgumentException("Error: Description should be at least 16 character!");
         }
     }
@@ -73,8 +73,8 @@ public class QuestionService {
         return questionRepository.save(new Question(
                 question.getUserId(),
                 question.getCategoryId(),
-                question.getTitle(),
-                question.getDescription(),
+                question.getTitle().trim(),
+                question.getDescription().trim(),
                 new Date()
         ));
     }
@@ -93,8 +93,8 @@ public class QuestionService {
         }
 
         Question retrievedQuestion = questionResult.get();
-        retrievedQuestion.setTitle(question.getTitle());
-        retrievedQuestion.setDescription(question.getDescription());
+        retrievedQuestion.setTitle(question.getTitle().trim());
+        retrievedQuestion.setDescription(question.getDescription().trim());
 
         return questionRepository.save(retrievedQuestion);
     }

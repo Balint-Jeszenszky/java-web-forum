@@ -120,6 +120,8 @@ public class AuthService {
         user.setRoles(roles);
         userRepository.save(user);
 
+        user.setPassword("");
+
         return user;
     }
 }

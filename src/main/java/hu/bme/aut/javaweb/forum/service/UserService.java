@@ -89,7 +89,11 @@ public class UserService {
             storedUser.setPassword(encoder.encode(user.getNewPassword()));
         }
 
-        return userRepository.save(storedUser);
+        userRepository.save(storedUser);
+
+        storedUser.setPassword("");
+
+        return storedUser;
     }
 
     public void deleteUserById(Long id, Long userId, Boolean admin) {

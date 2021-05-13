@@ -18,7 +18,7 @@ public class AnswerService {
     private AnswerRepository answerRepository;
 
     private void validateAnswer(AnswerDTO answer) {
-        if (answer.getText().length() < 3) {
+        if (answer.getText().trim().length() < 3) {
             throw new IllegalArgumentException("Error: Answer should be at least 3 character!");
         }
     }
@@ -49,7 +49,7 @@ public class AnswerService {
                         answer.getUserId(),
                         answer.getQuestionId(),
                         new Date(),
-                        answer.getText()
+                        answer.getText().trim()
                 )
         );
     }
@@ -68,7 +68,7 @@ public class AnswerService {
         }
 
         Answer retrievedAnswer = answerResult.get();
-        retrievedAnswer.setText(answer.getText());
+        retrievedAnswer.setText(answer.getText().trim());
 
         return answerRepository.save(retrievedAnswer);
     }

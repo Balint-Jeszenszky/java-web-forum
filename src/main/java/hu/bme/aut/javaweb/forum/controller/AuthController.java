@@ -28,6 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     public User registerUser(@RequestBody SignupRequest signUpRequest) {
         return authService.registerUser(signUpRequest);
     }

@@ -1,6 +1,6 @@
 package hu.bme.aut.javaweb.forum.service;
 
-import hu.bme.aut.javaweb.forum.datasource.CategoryDataSource;
+import hu.bme.aut.javaweb.forum.repository.CategoryRepository;
 import hu.bme.aut.javaweb.forum.model.Category;
 import hu.bme.aut.javaweb.forum.model.Question;
 import hu.bme.aut.javaweb.forum.model.dto.CategoryDTO;
@@ -16,13 +16,13 @@ import java.util.Optional;
 public class CategoryService {
 
     @Autowired
-    private CategoryDataSource categoryDataSource;
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private QuestionService questionService;
 
     private void validateCategory(CategoryDTO category) {
-        Optional<Category> categoryResult = categoryDataSource.findByName(category.getName());
+        Optional<Category> categoryResult = categoryRepository.findByName(category.getName());
 
         if (categoryResult.isPresent()) {
             throw new IllegalArgumentException("Error: Category already exists!");
@@ -34,19 +34,19 @@ public class CategoryService {
     }
 
     public List<Category> getAllCategories() {
-        return categoryDataSource.findAll();
+        return categoryRepository.findAll();
     }
 
     public Category createCategory(CategoryDTO category) {
         validateCategory(category);
 
-        return categoryDataSource.save(new Category(category.getName()));
+        return categoryRepository.save(new Category(category.getName()));
     }
 
     public Category updateCategory(CategoryDTO category) {
         validateCategory(category);
 
-        Optional<Category> categoryResult = categoryDataSource.findById(category.getId());
+        Optional<Category> categoryResult = categoryRepository.findById(category.getId());
 
         if (categoryResult.isEmpty()) {
             throw new NoSuchElementException("Error: Category not found!");
@@ -56,7 +56,7 @@ public class CategoryService {
 
         storedCategory.setName(category.getName());
 
-        return categoryDataSource.save(storedCategory);
+        return categoryRepository.save(storedCategory);
     }
 
     @Transactional
@@ -67,6 +67,6 @@ public class CategoryService {
             questionService.deleteQuestionById(q.getId());
         }
 
-        categoryDataSource.deleteById(id);
+        categoryRepository.deleteById(id);
     }
 }

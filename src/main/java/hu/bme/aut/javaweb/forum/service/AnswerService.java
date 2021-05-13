@@ -1,7 +1,7 @@
 package hu.bme.aut.javaweb.forum.service;
 
 import hu.bme.aut.javaweb.forum.model.dto.AnswerDTO;
-import hu.bme.aut.javaweb.forum.datasource.AnswerDataSource;
+import hu.bme.aut.javaweb.forum.repository.AnswerRepository;
 import hu.bme.aut.javaweb.forum.model.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class AnswerService {
 
     @Autowired
-    private AnswerDataSource answerDataSource;
+    private AnswerRepository answerRepository;
 
     private void validateAnswer(AnswerDTO answer) {
         if (answer.getText().length() < 3) {
@@ -24,11 +24,11 @@ public class AnswerService {
     }
 
     public List<Answer> getAnswersByQuestionId(Long id) {
-        return answerDataSource.findAnswersByQuestionId(id);
+        return answerRepository.findAnswersByQuestionId(id);
     }
 
     public Answer getAnswerById(Long id) {
-        Optional<Answer> answer = answerDataSource.findById(id);
+        Optional<Answer> answer = answerRepository.findById(id);
 
         if (answer.isEmpty()) {
             throw new NoSuchElementException("Answer not found");
@@ -44,7 +44,7 @@ public class AnswerService {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        return answerDataSource.save(
+        return answerRepository.save(
                 new Answer(
                         answer.getUserId(),
                         answer.getQuestionId(),
@@ -61,7 +61,7 @@ public class AnswerService {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        Optional<Answer> answerResult = answerDataSource.findById(answer.getId());
+        Optional<Answer> answerResult = answerRepository.findById(answer.getId());
 
         if (answerResult.isEmpty()) {
             throw new NoSuchElementException("Answer not found");
@@ -70,10 +70,10 @@ public class AnswerService {
         Answer retrievedAnswer = answerResult.get();
         retrievedAnswer.setText(answer.getText());
 
-        return answerDataSource.save(retrievedAnswer);
+        return answerRepository.save(retrievedAnswer);
     }
 
     public void deleteAnswerById(Long id) {
-        answerDataSource.deleteById(id);
+        answerRepository.deleteById(id);
     }
 }

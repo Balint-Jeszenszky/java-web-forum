@@ -1,7 +1,7 @@
 package hu.bme.aut.javaweb.forum.service;
 
-import hu.bme.aut.javaweb.forum.datasource.AnswerDataSource;
-import hu.bme.aut.javaweb.forum.datasource.QuestionDataSource;
+import hu.bme.aut.javaweb.forum.repository.AnswerRepository;
+import hu.bme.aut.javaweb.forum.repository.QuestionRepository;
 import hu.bme.aut.javaweb.forum.model.Question;
 import hu.bme.aut.javaweb.forum.model.dto.QuestionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,10 @@ import java.util.Optional;
 public class QuestionService {
 
     @Autowired
-    private QuestionDataSource questionDataSource;
+    private QuestionRepository questionRepository;
 
     @Autowired
-    private AnswerDataSource answerDataSource;
+    private AnswerRepository answerRepository;
 
     private void validateQuestion(QuestionDTO question) {
         if (question.getTitle().length() < 8) {
@@ -32,11 +32,11 @@ public class QuestionService {
     }
 
     public List<Question> getQuestionsByCategoryId(Long id) {
-        return questionDataSource.findQuestionsByCategoryId(id);
+        return questionRepository.findQuestionsByCategoryId(id);
     }
 
     public Question getQuestionById(Long id) {
-        Optional<Question> question = questionDataSource.findById(id);
+        Optional<Question> question = questionRepository.findById(id);
 
         if (question.isEmpty()) {
             throw new NoSuchElementException("Question not found");
@@ -45,14 +45,14 @@ public class QuestionService {
         return question.get();
     }
 
-    public List<Question> getNewestQuestions() { return questionDataSource.findNewestQuestions(); }
+    public List<Question> getNewestQuestions() { return questionRepository.findNewestQuestions(10); }
 
     public List<Question> getQuestionsByUserId(Long id, Long userId) {
         if (userId != id) {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        return questionDataSource.findQuestionsByUserIdOrderByTimeDesc(id);
+        return questionRepository.findQuestionsByUserIdOrderByTimeDesc(id);
     }
 
     public List<Question> getQuestionsAnsweredByUserId(Long id, Long userId) {
@@ -60,7 +60,7 @@ public class QuestionService {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        return questionDataSource.findQuestionsAnsweredByUserId(id);
+        return questionRepository.findQuestionsAnsweredByUserId(id);
     }
 
     public Question createQuestion(QuestionDTO question, Long userId) {
@@ -70,7 +70,7 @@ public class QuestionService {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        return questionDataSource.save(new Question(
+        return questionRepository.save(new Question(
                 question.getUserId(),
                 question.getCategoryId(),
                 question.getTitle(),
@@ -86,7 +86,7 @@ public class QuestionService {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        Optional<Question> questionResult = questionDataSource.findById(question.getId());
+        Optional<Question> questionResult = questionRepository.findById(question.getId());
 
         if (questionResult.isEmpty()) {
             throw new NoSuchElementException("Question not found");
@@ -96,13 +96,13 @@ public class QuestionService {
         retrievedQuestion.setTitle(question.getTitle());
         retrievedQuestion.setDescription(question.getDescription());
 
-        return questionDataSource.save(retrievedQuestion);
+        return questionRepository.save(retrievedQuestion);
     }
 
     @Transactional
     public void deleteQuestionById(Long id) {
-        answerDataSource.deleteAnswersByQuestionId(id);
-        questionDataSource.deleteById(id);
+        answerRepository.deleteAnswersByQuestionId(id);
+        questionRepository.deleteById(id);
     }
 
 }

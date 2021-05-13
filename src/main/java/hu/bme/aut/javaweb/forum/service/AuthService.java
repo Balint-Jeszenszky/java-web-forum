@@ -1,7 +1,7 @@
 package hu.bme.aut.javaweb.forum.service;
 
-import hu.bme.aut.javaweb.forum.datasource.RoleDataSource;
-import hu.bme.aut.javaweb.forum.datasource.UserDataSource;
+import hu.bme.aut.javaweb.forum.repository.RoleRepository;
+import hu.bme.aut.javaweb.forum.repository.UserRepository;
 import hu.bme.aut.javaweb.forum.model.ERole;
 import hu.bme.aut.javaweb.forum.model.Role;
 import hu.bme.aut.javaweb.forum.model.User;
@@ -32,10 +32,10 @@ public class AuthService {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserDataSource userDataSource;
+    UserRepository userRepository;
 
     @Autowired
-    RoleDataSource roleDataSource;
+    RoleRepository roleRepository;
 
     @Autowired
     PasswordEncoder encoder;
@@ -72,7 +72,7 @@ public class AuthService {
             throw new IllegalArgumentException("Error: Email is invalid!");
         }
 
-        if (userDataSource.existsByEmail(signUpRequest.getEmail())) {
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new IllegalArgumentException("Error: Email is already in use!");
         }
 
@@ -82,7 +82,7 @@ public class AuthService {
             throw new IllegalArgumentException("Error: Username should be 4-20 character of letters, .or _ with no double . or _!");
         }
 
-        if (userDataSource.existsByUsername(signUpRequest.getUsername())) {
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             throw new IllegalArgumentException("Error: Username is already taken!");
         }
 
@@ -100,17 +100,17 @@ public class AuthService {
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
-            Role userRole = roleDataSource.findByName(ERole.ROLE_USER)
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 if (role.equals("admin")) {
-                    Role adminRole = roleDataSource.findByName(ERole.ROLE_ADMIN)
+                    Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(adminRole);
                 } else {
-                    Role userRole = roleDataSource.findByName(ERole.ROLE_USER)
+                    Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                     roles.add(userRole);
                 }
@@ -118,7 +118,7 @@ public class AuthService {
         }
 
         user.setRoles(roles);
-        userDataSource.save(user);
+        userRepository.save(user);
 
         return user;
     }

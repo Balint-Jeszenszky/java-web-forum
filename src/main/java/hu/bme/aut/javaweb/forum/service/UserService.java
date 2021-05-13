@@ -1,10 +1,9 @@
 package hu.bme.aut.javaweb.forum.service;
 
-import hu.bme.aut.javaweb.forum.datasource.UserDataSource;
+import hu.bme.aut.javaweb.forum.repository.UserRepository;
 import hu.bme.aut.javaweb.forum.model.User;
 import hu.bme.aut.javaweb.forum.model.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +18,13 @@ import java.util.stream.Collectors;
 public class UserService {
 
     @Autowired
-    private UserDataSource userDataSource;
+    private UserRepository userRepository;
 
     @Autowired
     PasswordEncoder encoder;
 
     public List<User> getAllUsers() {
-        return userDataSource.findAll().stream().map(e -> {e.setPassword(""); return e;}).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(e -> {e.setPassword(""); return e;}).collect(Collectors.toList());
     }
 
     public User getUserById(Long id, Long userId, Boolean admin) {
@@ -33,7 +32,7 @@ public class UserService {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        Optional<User> user = userDataSource.findById(id);
+        Optional<User> user = userRepository.findById(id);
 
         if (user.isEmpty()) {
             throw new NoSuchElementException("User not found");
@@ -52,7 +51,7 @@ public class UserService {
             throw new IllegalArgumentException("Wrong userId");
         }
 
-        Optional<User> userResult = userDataSource.findById(userId);
+        Optional<User> userResult = userRepository.findById(userId);
 
         if (userResult.isEmpty()) {
             throw new NoSuchElementException("User not found");
@@ -67,7 +66,7 @@ public class UserService {
 
         User storedUser = userResult.get();
 
-        if (!user.getEmail().equals(storedUser.getEmail()) && userDataSource.existsByEmail(user.getEmail())) {
+        if (!user.getEmail().equals(storedUser.getEmail()) && userRepository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Error: Email is already in use!");
         }
 
@@ -90,7 +89,7 @@ public class UserService {
             storedUser.setPassword(encoder.encode(user.getNewPassword()));
         }
 
-        return userDataSource.save(storedUser);
+        return userRepository.save(storedUser);
     }
 
     public void deleteUserById(Long id, Long userId, Boolean admin) {
@@ -102,6 +101,6 @@ public class UserService {
             throw new IllegalArgumentException("Error: Can not delete admin");
         }
 
-        userDataSource.deleteById(id);
+        userRepository.deleteById(id);
     }
 }

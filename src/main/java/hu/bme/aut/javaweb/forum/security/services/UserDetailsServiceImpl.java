@@ -1,6 +1,6 @@
 package hu.bme.aut.javaweb.forum.security.services;
 
-import hu.bme.aut.javaweb.forum.datasource.UserDataSource;
+import hu.bme.aut.javaweb.forum.repository.UserRepository;
 import hu.bme.aut.javaweb.forum.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,12 +13,12 @@ import javax.transaction.Transactional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    UserDataSource userDataSource;
+    UserRepository userRepository;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDataSource.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
         return UserDetailsImpl.build(user);
